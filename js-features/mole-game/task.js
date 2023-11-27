@@ -77,3 +77,15 @@ for (let i = 0; i < 9; i++) {
 }
 
 scheduleMole();
+
+
+
+let pushBut = document.getElementById('checkbox');
+let body = document.getElementsByName ('body');
+    checkbox.addEventListener('change',function(){
+if (checkbox.checked) {
+body.classList.remove('light-mode');
+} else {
+body.classList.add('light-mode');
+}
+});
