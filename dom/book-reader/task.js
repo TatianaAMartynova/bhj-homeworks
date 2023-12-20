@@ -1,18 +1,18 @@
 document.addEventListener('DOMContentLoaded', function () {
     const fontSizeControls = document.querySelectorAll('.font-size');
-    const textColorControls = document.querySelectorAll('.text-color');
-    const bgColorControls = document.querySelectorAll('.background-color');
+    const textColorControls = document.querySelectorAll('.text_color');
+    const bgColorControls = document.querySelectorAll('.bg_color');
     const book = document.getElementById('book');
 
     function updateControlState(controls, activeControl) {
         controls.forEach(function (control) {
-            control.classList.remove(`${control.dataset.controlClass}_active`);
+            control.classList.remove('font-size_active', 'text_color_active', 'bg_color_active');
         });
-        activeControl.classList.add(`${activeControl.dataset.controlClass}_active`);
+        activeControl.classList.add(activeControl.dataset.controlClass + '_active');
     }
 
     function applyStyle(control, styleClass) {
-        book.classList.remove(`${styleClass}-active`);
+        book.classList.remove(styleClass + '-active');
         book.classList.add(control.dataset.controlClass);
     }
 
@@ -44,20 +44,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
             textColorControls.forEach(function (control) {
                 control.classList.remove('text_color_active');
-            });    
-            
+            });
+
             const selectedColor = control.dataset.color;
 
             control.classList.add('text_color_active');
 
-            book.classList.remove('book_color-gray', 'book_color-whitesmoke', 'book_color-black');
+            book.classList.remove('book_color-black', 'book_color-gray', 'book_color-whitesmoke');
 
-            if (selectedColor === 'gray') {
+            if (selectedColor === 'black') {
+                book.classList.add('book_color-black');
+            } else if (selectedColor === 'gray') {
                 book.classList.add('book_color-gray');
             } else if (selectedColor === 'whitesmoke') {
                 book.classList.add('book_color-whitesmoke');
-            } else if (selectedColor === 'black') {
-                book.classList.add('book_color-black');
             }
         });
     });
@@ -65,21 +65,21 @@ document.addEventListener('DOMContentLoaded', function () {
     bgColorControls.forEach(function (control) {
         control.addEventListener('click', function (event) {
             event.preventDefault();
-    
+
             bgColorControls.forEach(function (control) {
-                control.classList.remove('background_color_active');
+                control.classList.remove('bg_color_active');
             });
-    
+
             const selectedColor = control.dataset.color;
-    
-            control.classList.add('background_color_active');
-    
-            book.classList.remove('book_bg-gray', 'book_bg-black', 'book_bg-white');
-    
-            if (selectedColor === 'gray') {
-                book.classList.add('book_bg-gray');
-            } else if (selectedColor === 'black') {
+
+            control.classList.add('bg_color_active');
+
+            book.classList.remove('book_bg-black', 'book_bg-gray', 'book_bg-white');
+
+            if (selectedColor === 'black') {
                 book.classList.add('book_bg-black');
+            } else if (selectedColor === 'gray') {
+                book.classList.add('book_bg-gray');
             } else if (selectedColor === 'white') {
                 book.classList.add('book_bg-white');
             }
