@@ -1,37 +1,38 @@
 document.addEventListener('DOMContentLoaded', function () {
-   
-    function fetchData(url) {
-      return fetch(url)
-        .then(response => response.json())
-        .catch(error => console.error('Ошибка при загрузке данных', error));
-    }
-  
-    function displayPoll(pollData) {
-      const pollTitleElement = document.getElementById('poll__title');
-      const pollAnswersElement = document.getElementById('poll__answers');
-  
-      pollTitleElement.textContent = '';
-      pollAnswersElement.innerHTML = '';
-  
-      pollTitleElement.textContent = pollData.data.title;
-  
-      pollData.data.answers.forEach(answer => {
-        const answerButton = document.createElement('button');
-        answerButton.classList.add('poll__answer');
-        answerButton.textContent = answer;
-        answerButton.addEventListener('click', () => {
-          
-          alert('Спасибо, ваш голос засчитан!');
-        });
-  
-        pollAnswersElement.appendChild(answerButton);
+  const pollTitleElement = document.getElementById('poll__title');
+  const pollAnswersContainer = document.getElementById('poll__answers');
+
+  async function fetchPollData() {
+      try {
+          const response = await fetch('https://students.netoservices.ru/nestjs-backend/poll');
+          const data = await response.json();
+          displayPoll(data.data);
+      } catch (error) {
+          console.error('Error fetching poll data:', error);
+      }
+  }
+
+  function displayPoll(pollData) {
+      pollTitleElement.textContent = pollData.title;
+      pollAnswersContainer.innerHTML = '';
+
+      pollData.answers.forEach(answer => {
+          const answerButton = createAnswerButton(answer);
+          answerButton.addEventListener('click', showConfirmationDialog);
+          pollAnswersContainer.appendChild(answerButton);
       });
-    }
-  
-    fetchData('https://students.netoservices.ru/nestjs-backend/poll')
-      .then(pollData => {
-       
-        displayPoll(pollData);
-      });
-  });
-  
+  }
+
+  function createAnswerButton(answer) {
+      const answerButton = document.createElement('button');
+      answerButton.classList.add('poll__answer');
+      answerButton.textContent = answer;
+      return answerButton;
+  }
+
+  function showConfirmationDialog() {
+      alert('Спасибо, ваш голос засчитан!');
+  }
+
+  fetchPollData();
+});
