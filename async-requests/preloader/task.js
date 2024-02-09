@@ -1,55 +1,46 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const loader = document.getElementById('loader');
-    const itemsContainer = document.getElementById('items');
-  
-    function showLoader() {
-      loader.classList.add('loader_active');
-    }
-  
-    function hideLoader() {
-      loader.classList.remove('loader_active');
-    }
-  
-    function updateItems(currencyData) {
-      itemsContainer.innerHTML = ''; 
-  
-      for (const [currencyCode, currencyInfo] of Object.entries(currencyData.Valute)) {
-        const item = document.createElement('div');
-        item.classList.add('item');
-  
-        item.innerHTML = `
-          <div class="item__code">
-            ${currencyInfo.CharCode}
-          </div>
-          <div class="item__value">
-            ${currencyInfo.Value}
-          </div>
-          <div class="item__currency">
-            руб.
-          </div>
-        `;
-  
-        itemsContainer.appendChild(item);
-      }
-    }
+  const loader = document.getElementById('loader');
+  const itemsContainer = document.getElementById('items');
 
-    function fetchExchangeRate() {
-      showLoader();
-  
-      fetch('https://students.netoservices.ru/nestjs-backend/slow-get-courses')
-        .then(response => response.json())
-        .then(data => {
+  function showLoader() {
+      loader.classList.add('loader_active');
+  }
+
+  function hideLoader() {
+      loader.remove();
+  }
+
+  async function fetchCurrencyRates() {
+      try {
+          showLoader();
+          const response = await fetch('https://students.netoservices.ru/nestjs-backend/slow-get-courses');
+          const data = await response.json();
+          handleCurrencyRates(data.response.Valute);
+      } catch (error) {
+          console.error('Error fetching currency rates:', error);
+      } finally {
           hideLoader();
-          if (data && data.response && data.response.Valute) {
-            updateItems(data.response);
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching exchange rate:', error);
-          hideLoader();
-        });
-    }
-  
-    fetchExchangeRate();
-  });
-  
+      }
+  }
+
+  function handleCurrencyRates(currencyRates) {
+      for (const [currencyCode, currency] of Object.entries(currencyRates)) {
+          addItemToContainer(currencyCode, currency.Value);
+      }
+  }
+
+  function addItemToContainer(code, value) {
+      const newItem = document.createElement('div');
+      newItem.classList.add('item');
+
+      newItem.innerHTML = `
+          <div class="item__code">${code}</div>
+          <div class="item__value">${value}</div>
+          <div class="item__currency">руб.</div>
+      `;
+
+      itemsContainer.appendChild(newItem);
+  }
+
+  fetchCurrencyRates();
+});
